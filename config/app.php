@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Advanced Blog'),
+    'name' => env('APP_NAME', 'Advanced_Blog'),
 
     /*
     |--------------------------------------------------------------------------
