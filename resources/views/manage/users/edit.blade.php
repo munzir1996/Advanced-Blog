@@ -11,9 +11,10 @@
 
     <hr class="m-t-0">
 
+
+    <form action="{{route('users.update', $user->id)}}" method="post">
     <div class="columns">
         <div class="column">
-            <form action="{{route('users.update', $user->id)}}" method="post">
                 @csrf
                 {{method_field('PUT')}}
                 <div class="field">
@@ -53,12 +54,26 @@
                     </p>
                 </div>
 
-                <button type="submit" class="button is-primary">Edit User</button>
+        </div><!-- END .column -->
 
-            </form>
-        </div>
-    </div>
+        <div class="column">
+            <label for="roles" class="label">Roles</label>
+            <input type="hidden" name="roles" :value="rolesSelected">
+            @foreach ($roles as $role)
+            <div class="field">
+                <b-checkbox v-model="rolesSelected" :native-value="{{$role->id}}">{{$role->display_name}}</b-checkbox>
+            </div>
+            @endforeach
+        </div><!-- END .column -->
 
+    </div><!-- END .columns -->
+
+    <div class="columns">
+        <div class="column">
+            <button type="submit" class="button is-primary is-pulled-left">Edit User</button>
+        </div><!-- END .column -->
+    </div><!-- END .columns -->
+    </form>
 </div><!-- END .flex-vontainer -->
 
 @endsection
@@ -69,7 +84,8 @@
     var app = new Vue({
         el: '#app',
         data: {
-            password_options: 'keep'
+            password_options: 'keep',
+            rolesSelected: {!!$user->roles->pluck('id')!!},
         }
     });
 

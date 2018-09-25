@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Role;
 use Hash;
 use Session;
 use Illuminate\Http\Request;
@@ -82,7 +83,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->with('roles')->first();
 
         return view('manage.users.show')->withUser($user);
     }
@@ -95,9 +96,10 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::findOrFail($id);
+        $roles = Role::all();
+        $user = User::where('id', $id)->with('roles')->first();
 
-        return view('manage.users.edit')->withUser($user);
+        return view('manage.users.edit')->withUser($user)->withRoles($roles);
     }
 
     /**
@@ -133,12 +135,17 @@ class UserController extends Controller
             $user->password = Hash::make($request->password);
         }
 
-        if($user->save()){
-            return redirect()->route('users.show', $id);
+        $user->save();
+
+        $user->syncRoles(explode(',', $request->roles));
+        return redirect()->route('users.show', $id);
+        /*if(){
+
         }else{
             Session::flash('danger', 'Sorry a problem occured while updating user info.');
             return redirect()->route('users.edit');
         }
+        */
     }
 
     /**
